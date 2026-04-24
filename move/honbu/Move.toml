@@ -1,0 +1,15 @@
+[package]
+name = "honbu"
+edition = "2024.beta"
+description = "HONBU: Samurai Fighter Logistics OS - B2B coordination for ONE Samurai fight logistics on Sui."
+license = "Apache-2.0"
+version = "0.1.0"
+
+[dependencies]
+# Sui framework resolved automatically via sui CLI package management (v1.70+).
+
+[addresses]
+honbu = "0x0"
+
+[dev-addresses]
+honbu = "0x0"

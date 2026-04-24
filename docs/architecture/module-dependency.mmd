@@ -1,0 +1,14 @@
+graph TD
+    booking[honbu::booking] --> fighter[honbu::fighter]
+    booking --> venue[honbu::venue]
+    fighter --> admin[honbu::admin<br/>AdminCap]
+    venue --> admin
+
+    subgraph Capabilities
+        admin
+        agent_cap[AgentCap]
+        gym_cap[GymCap]
+    end
+
+    fighter -.issues.-> agent_cap
+    venue -.issues.-> gym_cap

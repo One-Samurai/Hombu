@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant Admin as ONE Admin
+    participant Gym
+    participant Agent
+    participant Chain as Sui (HONBU pkg)
+    participant PG as Postgres (PII)
+    participant W as Walrus
+
+    Admin->>Chain: create_agent_cap(agent_addr)
+    Admin->>Chain: create_gym(name, gym_owner)
+    Chain-->>Gym: GymCap
+
+    Agent->>PG: store passport/visa
+    PG-->>Agent: user_hash
+    Agent->>W: upload profile.jpg
+    W-->>Agent: blob_id
+    Agent->>Chain: register_fighter(user_hash, blob_id, ...)
+
+    Gym->>Chain: create_slot(start_ms, capacity)
+    Chain-->>Chain: TrainingSlot (shared)
+
+    Agent->>Chain: book_slot(AgentCap, Fighter, Slot)
+    Note over Chain: atomic: slot.booked_count++,<br/>mint Booking + Receipt
+    Chain-->>Agent: BookingReceipt
+
+    alt 24h+ before slot
+        Agent->>Chain: cancel_booking(Receipt, Booking, Slot)
+    else < 24h
+        Chain-->>Agent: abort ECancelWindowClosed
+    end
+
+    Note over Gym,Chain: after slot.start_ms + duration
+    Gym->>Chain: mark_completed(Booking, Slot)

@@ -1,0 +1,18 @@
+{
+  "network": "testnet",
+  "packageId": "0x76969441e81eac68563043c20dc20e0020ac1ade2db1a906d3c86a6c4025c683",
+  "modules": ["admin", "booking", "fighter", "venue"],
+  "adminCap": "0x4d1d37126c269607f786ff5769e581df8f63b0195429a0a545d39e07bed2e788",
+  "upgradeCap": "0xb9f39e9f49870c0f87fe59d1da0bf2c2622c29c947f8e034a328536aba12c823",
+  "digest": "7AzEr6j2eGwKfMpiikMQG6PryqEYyBoBjgJqF4H9dLYq",
+  "deployer": "0x1509b5fdf09296b2cf749a710e36da06f5693ccd5b2144ad643b3a895abcbc4c",
+  "gasUsed": "49133080",
+  "gasBudget": "100000000",
+  "timestampMs": "1777054282864",
+  "checkpoint": "329425963",
+  "epoch": "1079",
+  "explorer": {
+    "suiscan": "https://suiscan.xyz/testnet/object/0x76969441e81eac68563043c20dc20e0020ac1ade2db1a906d3c86a6c4025c683",
+    "suivision": "https://testnet.suivision.xyz/package/0x76969441e81eac68563043c20dc20e0020ac1ade2db1a906d3c86a6c4025c683"
+  }
+}
