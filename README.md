@@ -14,3 +14,9 @@
 ## 目標對象與 GTM 策略
 *   **對象**：ONE 賽事營運團隊、選手經紀人、日本在地合作道館與飯店。
 *   **策略**：先從內部 B2B 協作切入，取代現有的 Excel 管理模式。待資料結構完善後，逐步將去識別化的資源數據對外開放給粉絲行銷生態系。
+
+## ⚠️ Demo-only AgentCap bootstrap
+
+`/api/agent-cap` signs with the deployed AdminCap held in `ADMIN_PRIVATE_KEY_BECH32` env var.
+This is acceptable for hackathon demo only. In production the AgentCap issuance MUST be gated
+by KYC / invite code, and the admin key MUST live in a KMS (AWS KMS / GCP HSM), never an env var.
