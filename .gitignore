@@ -5,3 +5,10 @@ tasks/lessons.md
 .claude/settings.local.json
 tasks/
 memory/
+
+node_modules
+.next
+.vercel
+.env.local
+apps/web/.next
+pnpm-lock.yaml.backup
