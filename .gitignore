@@ -12,3 +12,6 @@ node_modules
 .env.local
 apps/web/.next
 pnpm-lock.yaml.backup
+apps/web/tsconfig.tsbuildinfo
+apps/web/test-results
+apps/web/next-env.d.ts
