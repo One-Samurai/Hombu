@@ -20,3 +20,18 @@
 `/api/agent-cap` signs with the deployed AdminCap held in `ADMIN_PRIVATE_KEY_BECH32` env var.
 This is acceptable for hackathon demo only. In production the AgentCap issuance MUST be gated
 by KYC / invite code, and the admin key MUST live in a KMS (AWS KMS / GCP HSM), never an env var.
+
+## Running the Web App
+
+```bash
+cp apps/web/.env.local.example apps/web/.env.local
+# fill NEXT_PUBLIC_GOOGLE_CLIENT_ID, ADMIN_PRIVATE_KEY_BECH32, ADMIN_CAP_ID
+pnpm install
+pnpm dev
+# open http://localhost:3000
+```
+
+### Env vars
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — Google OAuth client, redirect = `http://localhost:3000/auth/callback` + Vercel URL
+- `ADMIN_PRIVATE_KEY_BECH32` — signer holding AdminCap (demo only)
+- `ADMIN_CAP_ID` — `0x4d1d371...07bed2e788`
