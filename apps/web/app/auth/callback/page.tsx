@@ -12,11 +12,14 @@ export default function Callback() {
   const router = useRouter();
   const [status, setStatus] = useState("Finishing login…");
   const [err, setErr] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(useSession.persist.hasHydrated());
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    if (useSession.persist.hasHydrated()) {
+      setHydrated(true);
+      return;
+    }
     const unsub = useSession.persist.onFinishHydration(() => setHydrated(true));
-    if (useSession.persist.hasHydrated()) setHydrated(true);
     return unsub;
   }, []);
 
