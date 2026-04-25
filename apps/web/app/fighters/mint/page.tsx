@@ -30,6 +30,23 @@ export default function Mint() {
     if (!sess.jwt || !sess.userSalt || !sess.address) return;
     setBusy(true);
     try {
+      // Ensure user has gas (zkLogin addresses start empty)
+      const bal = await suiClient.getBalance({ owner: sess.address });
+      if (BigInt(bal.totalBalance) === 0n) {
+        const fr = await fetch("/api/faucet", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: sess.address }),
+        });
+        if (!fr.ok) throw new Error(`faucet failed: ${await fr.text()}`);
+        // Poll until coins appear on user's fullnode
+        for (let i = 0; i < 20; i++) {
+          await new Promise((r) => setTimeout(r, 1000));
+          const b = await suiClient.getBalance({ owner: sess.address });
+          if (BigInt(b.totalBalance) > 0n) break;
+        }
+      }
+
       let capId = sess.agentCapId ?? await findAgentCap(sess.address);
       if (!capId) {
         const r = await fetch("/api/agent-cap", {
