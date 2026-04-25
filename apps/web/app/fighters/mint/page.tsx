@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useSession } from "@/lib/store";
 import { findFighter } from "@/lib/queries/myFighter";
 import { findAgentCap } from "@/lib/queries/myAgentCap";
+import { suiClient } from "@/lib/sui";
 import { hashedIdFromJwtSub } from "@/lib/zklogin/hashedId";
 import { buildMintFighter } from "@/lib/tx/mintFighter";
 import { signAndExecuteZk } from "@/lib/zklogin/signer";
@@ -39,6 +40,11 @@ export default function Mint() {
         const j = await r.json();
         if (!r.ok) throw new Error(j.error);
         capId = j.capId;
+        // Wait for the user's fullnode to index the newly-created AgentCap
+        // before we use it as input in the mint tx (read-after-write lag).
+        if (j.digest) {
+          await suiClient.waitForTransaction({ digest: j.digest, timeout: 30_000 });
+        }
       }
       sess.set({ agentCapId: capId });
 

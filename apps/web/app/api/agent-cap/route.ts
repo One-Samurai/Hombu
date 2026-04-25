@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     options: { showType: true },
   });
   if (owned.data.length > 0) {
-    return NextResponse.json({ capId: owned.data[0].data?.objectId, reused: true });
+    return NextResponse.json({ capId: owned.data[0].data?.objectId, reused: true, digest: null });
   }
 
   const tx = new Transaction();
@@ -38,5 +38,5 @@ export async function POST(req: NextRequest) {
   const created = res.objectChanges?.find(
     (c: any) => c.type === "created" && c.objectType?.endsWith("::fighter::AgentCap")
   ) as any;
-  return NextResponse.json({ capId: created?.objectId, reused: false });
+  return NextResponse.json({ capId: created?.objectId, reused: false, digest: res.digest });
 }
