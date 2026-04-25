@@ -10,13 +10,21 @@ import { deriveAddress } from "@/lib/zklogin/address";
 
 export default function Callback() {
   const router = useRouter();
-  const { set, maxEpoch, randomness, ephemeralSecret } = useSession();
   const [status, setStatus] = useState("Finishing login…");
   const [err, setErr] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(useSession.persist.hasHydrated());
 
   useEffect(() => {
+    const unsub = useSession.persist.onFinishHydration(() => setHydrated(true));
+    if (useSession.persist.hasHydrated()) setHydrated(true);
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     (async () => {
       try {
+        const { maxEpoch, randomness, ephemeralSecret, set } = useSession.getState();
         const frag = new URLSearchParams(window.location.hash.slice(1));
         const jwt = frag.get("id_token");
         if (!jwt) throw new Error("no id_token in fragment");
@@ -40,7 +48,7 @@ export default function Callback() {
         setErr(e?.message ?? String(e));
       }
     })();
-  }, []);
+  }, [hydrated]);
 
   if (err) {
     return (
