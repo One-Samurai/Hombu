@@ -1,7 +1,6 @@
-const SALT_URL = process.env.NEXT_PUBLIC_SALT_URL;
+const SALT_URL = process.env.NEXT_PUBLIC_SALT_URL ?? "/api/salt";
 
 export async function fetchSalt(jwt: string): Promise<string> {
-  if (!SALT_URL) throw new Error("NEXT_PUBLIC_SALT_URL not set");
   const attempt = async () => {
     const r = await fetch(SALT_URL, {
       method: "POST",
