@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
+import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 
-const FAUCET_URL = process.env.FAUCET_URL ?? "https://faucet.testnet.sui.io/v1/gas";
+const DRIP_MIST = 50_000_000n; // 0.05 SUI
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,14 +11,20 @@ export async function POST(req: NextRequest) {
     if (!address || !/^0x[0-9a-fA-F]{64}$/.test(address)) {
       return NextResponse.json({ error: "bad address" }, { status: 400 });
     }
-    const r = await fetch(FAUCET_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ FixedAmountRequest: { recipient: address } }),
+    const adminKey = process.env.ADMIN_PRIVATE_KEY_BECH32;
+    if (!adminKey) return NextResponse.json({ error: "admin key not set" }, { status: 500 });
+
+    const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+    const signer = Ed25519Keypair.fromSecretKey(adminKey);
+
+    const tx = new Transaction();
+    const [coin] = tx.splitCoins(tx.gas, [DRIP_MIST]);
+    tx.transferObjects([coin], address);
+
+    const res = await client.signAndExecuteTransaction({
+      transaction: tx, signer, options: { showEffects: false },
     });
-    const text = await r.text();
-    if (!r.ok) return NextResponse.json({ error: `faucet ${r.status}: ${text}` }, { status: 502 });
-    return new NextResponse(text, { status: 200, headers: { "Content-Type": "application/json" } });
+    return NextResponse.json({ digest: res.digest, amount: DRIP_MIST.toString() });
   } catch (e: any) {
     return NextResponse.json({ error: `faucet: ${e?.message ?? e}` }, { status: 500 });
   }
